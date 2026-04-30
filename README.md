@@ -1,29 +1,133 @@
-# Pathfinding Visualizer
+# 🧭 Pathfinding Visualizer
 
-Welcome to Pathfinding Visualizer! I built this application because I was fascinated by pathfinding algorithms, and I wanted to visualize them in action. I hope that you enjoy playing around with this visualization tool just as much as I enjoyed building it. You can access it here (use Google Chrome!): https://clementmihailescu.github.io/Pathfinding-Visualizer/
+An interactive browser-based tool to **visualize how pathfinding algorithms explore a grid** — step by step, in real time. Draw walls, place your start and end nodes, pick an algorithm, and watch it work.
 
-## Meet the Algorithms
+🔗 **Live Demo:** [https://practical-benz-8a0ad1.netlify.app](https://practical-benz-8a0ad1.netlify.app)
 
-This application supports the following algorithms: 
+![Pathfinding Visualizer Screenshot](https://user-images.githubusercontent.com/60571252/82052701-b52e4700-96d9-11ea-8387-e84816091b62.png)
 
-**Dijkstra's Algorithm** (weighted): the father of pathfinding algorithms; guarantees the shortest path
+---
 
-**A* Search** (weighted): arguably the best pathfinding algorithm; uses heuristics to guarantee the shortest path much faster than Dijkstra's Algorithm
+## ✨ Features
 
-**Greedy Best-first Search** (weighted): a faster, more heuristic-heavy version of A*; does not guarantee the shortest path
+- **Multiple algorithms** — Dijkstra's, A\*, BFS, and DFS
+- **Heuristic selection** — Choose the heuristic used by informed search algorithms (A\*)
+- **Interactive grid** — Click and drag to draw walls (obstacles)
+- **Random maze** — Generate a random obstacle layout with one click
+- **Smooth animations** — Watch the traversal unfold cell by cell, followed by the shortest path highlight
+- **Reset & repeat** — Clear the grid and try a different setup instantly
 
-**Swarm Algorithm** (weighted): a mixture of Dijkstra's Algorithm and A*; does not guarantee the shortest-path
+---
 
-**Convergent Swarm Algorithm** (weighted): the faster, more heuristic-heavy version of Swarm; does not guarantee the shortest path
+## 🧠 Algorithms
 
-**Bidirectional Swarm Algorithm** (weighted): Swarm from both sides; does not guarantee the shortest path
+| Algorithm | Type | Guarantees Shortest Path |
+|---|---|---|
+| **Dijkstra's** | Uninformed |  Yes |
+| **A\*** | Informed (heuristic) |  Yes |
+| **BFS** (Breadth-First Search) | Uninformed |  Yes |
+| **DFS** (Depth-First Search) | Uninformed |  No |
 
-**Breath-first Search** (unweighted): a great algorithm; guarantees the shortest path
+> Informed algorithms use a heuristic (e.g. Manhattan distance) to prioritize which nodes to explore, making them faster in practice. DFS is included for comparison — it finds *a* path, not necessarily the *shortest* one.
 
-**Depth-first Search** (unweighted): a very bad algorithm for pathfinding; does not guarantee the shortest path
+---
 
-On top of the pathfinding algorithms listed above, I implemented a **Recursive Division** Maze Generation algorithm.
+## 🚀 Getting Started
 
-## More about the Swarm Algorithm
+### Prerequisites
 
-The Swarm Algorithm is an algorithm that I - at least presumably so (I was unable to find anything close to it online) - co-developed with a good friend and colleague, Hussein Farah. The algorithm is essentially a mixture of Dijkstra's Algorithm and A* Search; more precisely, while it converges to the target node like A* , it still explores quite a few neighboring nodes surrounding the start node like Dijkstra's. The algorithm differentiates itself from A* through its use of heuristics: it continually updates nodes' distance from the start node while taking into account their estimated distance from the target node. This effectively "balances" the difference in total distance between nodes closer to the start node and nodes closer to the target node, which results in the triangle-like shape of the Swarm Algorithm. We named the algorithm "Swarm" because one of its potential applications could be seen in a video-game where a character must keep track of a boss with high priority (the target node), all the while keeping tracking of neighboring enemies that might be swarming nearby. 
+- [Node.js](https://nodejs.org/) (v14 or above)
+- npm (comes with Node.js)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Harsh-trains/PathfindingVisualizer.git
+
+# Navigate into the project
+cd PathfindingVisualizer
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser. The page reloads automatically on edits.
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+---
+
+## 🕹️ How to Use
+
+1. **Select an algorithm** from the dropdown in the navbar
+2. **Select a heuristic** (relevant for A\*)
+3. **Draw walls** — click and drag on any cell to add obstacles
+4. *(Optional)* Click **Random Grid** to generate a random maze
+5. Click **Visualize** to run the algorithm
+6. Watch the **traversal animation**, then see the **shortest path** highlighted
+7. Click **Reset** and repeat with a different setup
+
+---
+
+## 🗂️ Project Structure
+
+```
+PathfindingVisualizer/
+├── public/
+│   └── index.html
+├── src/
+│   ├── App.js
+│   ├── PathfindingVisualizer/
+│   │   ├── PathfindingVisualizer.jsx   # Main orchestrator component
+│   │   ├── PathfindingVisualizer.css
+│   │   └── Node/
+│   │       ├── Node.jsx                # Individual grid cell
+│   │       └── Node.css
+│   └── algorithms/
+│       ├── dijkstra.js
+│       ├── astar.js
+│       ├── bfs.js
+│       └── dfs.js
+├── package.json
+└── README.md
+```
+
+---
+
+## 🏗️ Architecture Overview
+
+The app is built with **React** (Create React App). The core design separates algorithm logic from rendering:
+
+- **`PathfindingVisualizer`** — The stateful orchestrator. Holds the grid (a 2D array of node objects), handles mouse events for wall-drawing, calls the selected algorithm, and drives the animation via staggered `setTimeout` calls.
+- **`Node`** — A presentational component for each cell. Receives props (`isWall`, `isVisited`, `isShortestPath`, etc.) and applies the corresponding CSS class.
+- **`/algorithms`** — Pure functions that take the grid + start/finish nodes and return `visitedNodesInOrder[]`. They have no side effects and are completely independent of the UI.
+
+Animation is handled by **direct DOM class mutation** (rather than React state updates) to avoid re-rendering hundreds of cells on every frame — a deliberate performance trade-off.
+
+---
+
+## 🛠️ Tech Stack
+
+- **ReactJS** — UI and component logic
+- **HTML / CSS** — Layout and animation styling
+- **JavaScript (ES6+)** — Algorithm implementations
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 🙏 Acknowledgements
+
+Inspired by the pathfinding visualizer tutorial by [Clément Mihailescu](https://github.com/clementmihailescu/Pathfinding-Visualizer).
